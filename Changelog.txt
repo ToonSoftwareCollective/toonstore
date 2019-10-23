@@ -1,0 +1,173 @@
+4.0.0
+- settings are now stored in /mnt/data/tsc/toonstore.userSettings.json
+- app is only firmware 5 compatible. Support for older firmware has been dropped.
+- toonstore apps can only be installed via the supporting TSC scipts on firmware 5
+  Therefore support for signature keys (needed for older firmwares) has been dropped as well.
+
+3.0.3
+- few bug fixes:
+  The button "Toon bijwerken" is not shown anymore when no packages are selected to be installed/removed.
+  Pressing the button caused a gui to restart for nothing.
+  Secondly, when looking at the changelog, the "Terug" button is now functioning properly.
+
+3.0.2
+- implemented new install / remove process for apps because the original firmware upgrade
+  process is introducing a 60 seconds delay in installing apps from firmware 5.5.7 onwards.
+  The new install method is not using any Eneco functionality anymore (Thanks to TheHogNL).
+  This new process is active from firmware 4.16.8 and requires the latest resourcefile/script versions.
+  For firmwares before 4.16.8 there is no change.
+- optimised handling of settings files and removed unused code.
+
+2.1.4 minor bug fixes
+
+2.1.3
+- maximum number of 3 apps to be installed in one run.....
+- a little bit of cleanup in the installation scripts
+
+2.1.1/2
+- firmware 5 compatibility
+
+2.0.2
+- improved ToonStore install script. No new functionality.
+
+2.0.1
+- settings screen adjusted to the new screen resolution of Toon 2
+  no impact on Toon 1 users
+
+2.0.0
+- now compatible with Toon 2 !!!
+- some code cleanup but no new functionality for Toon 1 users
+
+1.1.5
+- fixed compatibility of the installer with firmware 4.16.8 and higher
+
+1.1.4
+- fixed firmware version display for newer firmwares
+
+1.1.3
+- removed the option to remove ToonStore when an update of ToonStore is available
+
+1.1.2
+- installer made compatible with firmware 4.11
+
+1.1.1
+- fixed glitch in dependency name resolution
+
+1.1.0
+- fixed handling of dependencies
+- fixed change in qml project filename from fw 4.10.6 onwards
+
+1.0.2
+- fixed issue with checking new version numbers
+- fixed minor cosmetic issue with retrieving firmware version Toon
+- display Toon's IP adress at the bottom of the screen (convenient for connection with Domoticz etc)
+- implemented hidden test mode (just for developers, not for normal use)
+
+1.0.1
+- reduced memory footprint slightly by optimizing the display of ToonStore messages
+
+1.0.0
+- removed the additional 'Back' button at the top left in ToonStore which was shown when returning from the details screen
+- implemented a firmware version compatibility check for ToonStore apps (incompatible apps will not be downloaded), instead a warning icon will be shown
+- actual firmware version displayed at the bottom
+- last refresh date/time of the ToonStore catalog is shown at the bottom left
+
+0.9.4
+- added fullscreen viewing of screenshots to the details page per app (click on the '?')
+- added a popup message when making changes to warn that Toon will restart after pressing 'Bijwerken'
+- properly coded the start of auto-update timer (removed workaround of 0.9.1)
+
+0.9.1
+- created a workaround for a bug which didn't start the timer correctly for the auto update function
+- fixed: not all apps showed the availability of an update correctly
+
+0.9.0
+- improved display of descriptions of apps
+- implemented exclusion of apps from the auto-update function (controlled via ToonStore repository
+- added screen for viewing changelog per app (click on the question mark)
+- activated some more deletions in the upgrade script (only the log file now remains to be deleted)
+- project file patching criteria extended
+- added restart of the http server after patching the project file
+- fixed some issues with cleanup in the postrm script
+- automated writing of version.txt
+
+0.8.4
+- added 403-forbidden patch to installer
+- first beta release
+
+0.8.3
+- version for testing installer scripts. otherwise equal to 0.8.2
+
+0.8.2
+- fixed an issue where the show icon in systray setting was not properly read at startup
+- prevented the removal of ToonStore via ToonStore
+- validation of the time setting data entry
+
+0.8.1
+- packaged version of 0.8.0
+- new (more colourful) systray icon
+
+0.8.0
+- added configurationscreen:
+  to enable/disable daily automatic updating of apps at a configurable time.
+  to show or hide the systray icon
+
+0.7.6
+- added auto-update function for installed apps
+
+0.7.5
+- upgrade script: flush cache and file system prior to install
+- upgrade script: remove old package cache info prior to install
+- installer: post warning on Service center contact loss
+- cosmetic changes
+
+0.7.4
+- rebranded to Toonstore
+ 
+0.7.3
+- only write packages to be installed/removed files if there are packages to be processed
+- if no action is required, the update routine will not be invoked
+- <packagename> tag from xml file is now used for the installation requests
+
+0.7.2.
+- removed write files to be installed (empty) at startup
+
+0.7 / 0.7.1
+- added code to process deletion of apps plus new icon
+
+0.6.2
+- upgrade script adapted to restart gui and hcb_config
+- installer adapted to restart gui and hcb_config after installation and removal
+
+0.6.1
+- fixed error in update status filename
+- upgrade script fully working
+
+0.6.0
+- added check for upgrade package ready and submit final http call
+
+0.5.2
+- added code to remove trailing linefeeds from /etc/hosts 
+
+0.5.1
+- changed download path and file to /tmp/packages_to_install.txt
+  (there will be a packages_to_delete.txt, no doubt)
+- modified http request to start update
+- modified package path name construction (2x)
+- changed i in geinstalleerd to its unicode character
+
+0.5
+- updated systray icon
+- bug fixes in hosts file editing
+
+0.4
+- included the domoticaforum.eu ToonRepo.xml URL 
+
+0.3
+- bug while flipping through pages is resolved. 
+
+0.2
+- first functional release. One bug: selected state of apps to install is not shown after flipping through pages but selection is still valid
+
+0.1
+- initial release PoC screenflows

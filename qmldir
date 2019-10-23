@@ -1,0 +1,4 @@
+module apps.toonstore
+ToonstoreScreen 1.0 ToonstoreScreen.qml
+ToonstoreApp 1.0 ToonstoreApp.qml
+ToonstoreDelegate 1.0 ToonstoreDelegate.qml
