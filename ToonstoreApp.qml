@@ -274,7 +274,6 @@ App {
 
 	function updateRepoInfoAndUpdate() {
 		updateRepoInfo();
-		readLatestFirmwareVersion();
 		writeAutoUpdatesToBeApplied();
 		applyAutoUpdates();
 	}
