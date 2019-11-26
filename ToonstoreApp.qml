@@ -265,9 +265,9 @@ App {
 			}
 		}
 		if (testMode) {
-			xmlhttp.open("GET", "http://files.domoticaforum.eu/uploads/Toon/apps/ToonRepo_test.xml", true);
+			xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/master/ToonRepoTest.xml", true);
 		} else {
-			xmlhttp.open("GET", "http://files.domoticaforum.eu/uploads/Toon/apps/ToonRepo.xml", true);
+			xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/master/ToonRepo.xml", true);
 		}
 		xmlhttp.send();
 	}

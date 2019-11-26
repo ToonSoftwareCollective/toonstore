@@ -4,7 +4,6 @@ import FileIO 1.0
 
 Rectangle {
 
-	property string folderStripped
 
 	// Create the app description with the corrosponding XML nodes. Nodes are named in the ToonstoreScreen.qml
 	function getDescription() {
@@ -33,12 +32,12 @@ Rectangle {
 		id: appVersionTxt
 	}
 
-	function showChangelog(foldername) {
+	function showChangelog() {
 	
 		app.delegateChangelog = "\n\n\n\n\n\n\n          Ophalen changelog ......";
 		app.delegateChangelogTitle = "Nieuwe functies " + name;
 		app.delegateChangelogScreenshots = parseInt(screenshots);
-		app.screenshotURLchunk = folder + "/" + folderStripped + "_screenshot_";
+		app.screenshotURLchunk = folder + "_screenshot_";
 		stage.navigateHome();
 		app.toonstoreDelegateChangelog.show();
 
@@ -51,29 +50,16 @@ Rectangle {
 				}
 			}
 		}
-		xmlhttp.open("GET", "http://files.domoticaforum.eu/uploads/Toon/apps/" + foldername + "/Changelog.txt", true);
+		xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/" + folder + "/master/Changelog.txt", true);
 		xmlhttp.send();
 	}
 
 	function getInstalledStatus() {
-		var findMinus = folder.indexOf("-");
-		if (findMinus > 0) {
-			folderStripped = folder.substring(0, findMinus);
-		} else {
-			folderStripped = folder;
-		}
-		return (app.installedApps.indexOf(folderStripped) > 0 );
+		return (app.installedApps.indexOf(folder) > 0 );
 	}
 
 	function getInstalledVersion() {
-		var findMinus = folder.indexOf("-");
-		if (findMinus > 0) {
-			folderStripped = folder.substring(0, findMinus);
-		} else {
-			folderStripped = folder;
-		}
-//		var temp = "file:///qmf/qml/apps/" + folderStripped + "/version.txt"
-		appVersionTxt.source = "file:///qmf/qml/apps/" + folderStripped + "/version.txt";
+		appVersionTxt.source = "file:///qmf/qml/apps/" + folder + "/version.txt";
 		var versionStr = appVersionTxt.read();
 		return versionStr.trim();
 	}
@@ -93,7 +79,6 @@ Rectangle {
 
 	function addToAutoUpdates(packageName) {
 		var searchStr = packageName;
-		console.log("**********" + skipautoupdate + "-" + packageName + "-" + app.autoUpdatesToBeApplied.indexOf(searchStr));
 		if (app.autoUpdatesToBeApplied.indexOf(searchStr) > 0) {
 			// should not happen
 			console.log("*********** Error in toonstore - package to add (AutoUpdates) already present in string")
@@ -186,7 +171,7 @@ Rectangle {
 					deleteButton.visible = false;
 				}
 				downloadButton.visible = true;
-				addToAutoUpdates(packagename);
+				addToAutoUpdates(folder + "-" + version);
 				return "Nieuwe versie:";
 			} else {
 				deleteButton.visible = true;
@@ -273,7 +258,6 @@ Rectangle {
 	width: isNxt ? 870 : 646
 	height: isNxt ? 94 : 73
 //	color: colors.background
-
 	Text {
 		id: roadLabel
 		x: isNxt ? 13 : 10
@@ -320,7 +304,7 @@ Rectangle {
 
 	Text {
 		id:tobeDownloaded
-		text: getToBeDownloaded(packagename)
+		text: getToBeDownloaded(folder + "-" + version)
 		anchors.baseline: parent.top
 		anchors.baselineOffset: isNxt ? 38 : 30
 		anchors.right: parent.right
@@ -329,7 +313,7 @@ Rectangle {
 
 	Text {
 		id:tobeDeleted
-		text: getToBeDeleted(packagename)
+		text: getToBeDeleted(folder + "-" + version)
 		anchors.baseline: parent.top
 		anchors.baselineOffset: isNxt ? 38 : 30
 		anchors.right: parent.right
@@ -361,16 +345,16 @@ Rectangle {
 		leftClickMargin: 3
 		bottomClickMargin: 5
 		iconSource: "qrc:/tsc/minus.png"
-		state: getDeleteButtonStatus(packagename)
+		state: getDeleteButtonStatus(folder + "-" + version)
 		onClicked: {
 			if (tobeDeleted.text === "0") {
 				deleteButton.state = "up";
-				addToDeletes(packagename);
+				addToDeletes(folder + "-" + version);
 				downloadButton.state = "down";
-				removeFromUpdates(packagename);
+				removeFromUpdates(folder + "-" + version);
 			} else {			
 				deleteButton.state = "down";
-				removeFromDeletes(packagename);
+				removeFromDeletes(folder + "-" + version);
 			}
 		}
 	}
@@ -384,17 +368,17 @@ Rectangle {
 		leftClickMargin: 3
 		bottomClickMargin: 5
 		iconSource: validateVersion(firmwareminimum, firmwaremaximum, app.toonSoftwareVersion, "yes") ? "qrc:/tsc/plus.png" : "qrc:/tsc/bad_small.png"
-		state: getUpdateButtonStatus(packagename)
+		state: getUpdateButtonStatus(folder + "-" + version)
 		onClicked: {
 			if (validateVersion(firmwareminimum, firmwaremaximum, app.toonSoftwareVersion, "yes")) {
 				if (tobeDownloaded.text === "0") {
 					downloadButton.state = "up";
-					addToUpdates(packagename);
+					addToUpdates(folder + "-" + version);
 					deleteButton.state = "down";
-					removeFromDeletes(packagename);
+					removeFromDeletes(folder + "-" + version);
 				} else {			
 					downloadButton.state = "down";
-					removeFromUpdates(packagename);
+					removeFromUpdates(folder + "-" + version);
 				}
 			} else {
 				downloadButton.state = "down";

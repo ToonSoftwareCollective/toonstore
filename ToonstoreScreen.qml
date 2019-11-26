@@ -133,13 +133,11 @@ Screen {
 		id: toonstoreModel
 		query: "/repository/app"
 		roles: ({
-			appid: "string",
 			name: "string",
 			version: "string",
+			folder: "string",
 			description: "string",
 			author: "string",
-			folder: "string",
-			packagename: "string",
 			skipautoupdate : "string",
 			firmwareminimum : "string",
 			firmwaremaximum : "string",
@@ -209,7 +207,7 @@ Screen {
 
 	Text {
 		id: footerRight
-		text: app.testMode ? "Bron: test xml !!!!!" : "Bron: domoticaforum.eu"
+		text: app.testMode ? "Bron: test xml !!!!!" : "Bron: github.com/ToonSoftwareCollective"
 		anchors {
 			baseline: parent.bottom
 			baselineOffset: -5

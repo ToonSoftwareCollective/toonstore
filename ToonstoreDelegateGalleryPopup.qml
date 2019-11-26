@@ -48,7 +48,7 @@ Popup {
 
 	function navigatePage(page) {
 		p.currentPage = page;
-		gallery.source = "http://files.domoticaforum.eu/uploads/Toon/apps/" + app.screenshotURLchunk + (p.currentPage + 1) + ".png";
+		gallery.source = "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/master/" + app.screenshotURLchunk + (p.currentPage + 1) + ".png";
 		if (page < p.pageOffsetNavigator) {
 			imageSelector.visible = false;
 		} else {
