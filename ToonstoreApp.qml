@@ -152,8 +152,10 @@ App {
 		if (autoUpdate) {
 			datetimeTimerFiles.interval = targetTimer;
 			datetimeTimerFiles.running = true;
+			console.log("ToonStore auto update timer set for " + targetTimer + " from " + now);
 		} else {
 			datetimeTimerFiles.running = false;	
+			console.log("ToonStore auto update timer not started");
 		}
 	}
 
@@ -292,7 +294,11 @@ App {
 			toonstoreSettingsJson = JSON.parse(toonstoreSettingsFile.read());
 			showStoreIcon = (toonstoreSettingsJson['showStoreIcon'] == "true");
 			autoUpdate = (toonstoreSettingsJson['autoUpdate'] == "true");		
-			autoUpdateTime = toonstoreSettingsJson['autoUpdateTime'];		
+			autoUpdateTime = toonstoreSettingsJson['autoUpdateTime'];
+			if (autoUpdate) {
+				activateUpdateTimer();
+			}
+	
 		} catch(e) {
 		}
 
@@ -324,7 +330,7 @@ App {
  		toonstoreSettingsJson = {
 			"showStoreIcon" : tmpTrayIcon,
 			"autoUpdate" : tmpautoUpdate,
-			"autopUpdateTime" : autoUpdateTime
+			"autoUpdateTime" : autoUpdateTime
 		}
 
   		var doc3 = new XMLHttpRequest();
