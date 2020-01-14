@@ -1,5 +1,5 @@
 5.0.1
-- bugfixed for the auto update timer, now working as expected
+- bugfix for the auto update timer, now working as expected
 
 5.0.0
 - change location of app repo to github (including all apps available in the toonstore)
