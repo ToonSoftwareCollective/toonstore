@@ -223,7 +223,10 @@ App {
 		// 		2. secondly edit host file
 		//		3. thirdly call http request
 
-		if (writeUpdatesToBeApplied() || writeDeletesToBeApplied()) {		
+		var check1 = writeUpdatesToBeApplied();
+		var check2 = writeDeletesToBeApplied();
+
+		if (check1 || check2) {		
 			writeTSCscriptCommand();		//valid from 4.16.8 onwards, but app is Firmware 5 compatible only
 		}
 	}
