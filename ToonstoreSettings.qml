@@ -131,4 +131,31 @@ Screen {
 			}
 		}
 	}
+
+	Text {
+		id: showNotifictions
+		anchors {
+			top: showIconText.bottom
+			topMargin: isNxt ? 25 : 20
+			left: autoUpdateText.left
+		}
+		font.pixelSize: isNxt ? 20 : 16
+		font.family: qfont.semiBold.name
+		text: qsTr("Show notification of new apps")
+	}
+
+	OnOffToggle {
+		id: showNotifictionsToggle
+		height: isNxt ? 45 : 36
+		anchors.left: autoUpdateToggle.left
+		anchors.top: showNotifictions.top
+		leftIsSwitchedOn: false
+		onSelectedChangedByUser: {
+			if (isSwitchedOn) {
+				app.saveShowNotifications("Yes")
+			} else {
+				app.saveShowNotifications("No")
+			}
+		}
+	}
 }

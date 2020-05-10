@@ -18,6 +18,12 @@ Screen {
 			noJamsText.visible = false;
 			toonstoreModel.xml = app.repoDataAll;
 			toonstoreSimpleList.initialView();
+
+			if (!app.testMode && app.sendNotificationOfNewApps) {
+				checkNewApps();
+			}
+			saveCurrentRepoInfo();
+
 		} else {
 			noJamsText.visible = true;
 			noJamsText.text = "Geen apps in ToonStore";
@@ -45,6 +51,48 @@ Screen {
 	onShown: {
 		updateInstallButton();
 		hasBackButton = false;
+	}
+	
+	function checkNewApps() {
+		
+		for (var i = 0; i < toonstoreModel.count; i++) {
+			var j = app.namesOldRepo.indexOf(toonstoreModel.get(i).folder);
+			if (j < 0) {
+				app.sendNotification("Er is een nieuwe app in de ToonStore: " + toonstoreModel.get(i).name);
+			} else {
+				if ( app.versionsOldRepo[j] !== toonstoreModel.get(i).version) {
+					app.sendNotification("Er is een update in de ToonStore van " + toonstoreModel.get(i).name);
+				}
+			}
+		}
+	}
+
+	function saveCurrentRepoInfo() {
+		
+		var tmpRepoInfoNames = "";
+		var tmpRepoInfoVersions = "";
+		var j = toonstoreModel.count - 1;
+		for (var i = 0; i < toonstoreModel.count; i++) {
+			if ( i == j) {
+				tmpRepoInfoNames = tmpRepoInfoNames + '"' + toonstoreModel.get(i).folder + '"';
+				tmpRepoInfoVersions = tmpRepoInfoVersions + '"' + toonstoreModel.get(i).version + '"';
+			} else {
+				tmpRepoInfoNames = tmpRepoInfoNames + '"' + toonstoreModel.get(i).folder + '",';
+				tmpRepoInfoVersions = tmpRepoInfoVersions + '"' + toonstoreModel.get(i).version + '",';
+			}
+		}
+		var tmpRepoInfo = '{"names":[' + tmpRepoInfoNames + '],';
+		var tmpRepoInfo = tmpRepoInfo + '"versions":[' + tmpRepoInfoVersions + ']}';
+  		var doc3 = new XMLHttpRequest();
+   		doc3.open("PUT", "file:///mnt/data/tsc/toonstore.oldRepoInfo.json");
+		doc3.onreadystatechange=function() {
+			if (doc3.readyState == 4) {
+				app.readOldRepoInfo();
+			}
+		}
+
+   		doc3.send(tmpRepoInfo);
+
 	}
 
 	function updateInstallButton() {

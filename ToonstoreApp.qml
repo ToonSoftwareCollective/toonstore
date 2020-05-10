@@ -41,8 +41,11 @@ App {
 	property bool showStoreIcon : true
 	property bool updateViaTSCscripts : false
 	property bool autoUpdate : false
+	property bool sendNotificationOfNewApps : false
 	property string autoUpdateTime
 	property SystrayIcon toonstoreTray
+	property variant namesOldRepo : []
+	property variant versionsOldRepo : []
 
 	property bool toonstoreDataRead: false
 	property bool testMode : false
@@ -53,16 +56,18 @@ App {
 	signal toonstoreUpdated()
 
 	// user settings from config file
-	property variant toonstoreSettingsJson : {
-		'showTrayIcon': "",
-		'autoUpdate': "",
-		'autoUpdateTime': ""
-	}
+	property variant toonstoreSettingsJson
 
 	FileIO {
 		id: toonstoreSettingsFile
 		source: "file:///mnt/data/tsc/toonstore.userSettings.json"
  	}
+
+	FileIO {
+		id: toonstoreOldRepoInfoFile
+		source: "file:///mnt/data/tsc/toonstore.oldRepoInfo.json"
+		onError: { sendNotificationOfNewApps = false; }
+	}
 
 	FileIO {
 		id: qmlDir
@@ -97,6 +102,12 @@ App {
 		registry.registerWidget("menuItem", null, this, null, {objectName: "toonstoreMenuItem", label: qsTr("ToonStore"), image: toonstoreMenuIconUrl, screenUrl: fullScreenUrl, weight: 120});
 		registry.registerWidget("systrayIcon", trayUrl, toonstoreApp);
 		registry.registerWidget("popup", toonstoreDelegateGalleryPopupUrl, this, "toonstoreDelegateGalleryPopup");
+		notifications.registerType("toonstore", notifications.prio_HIGHEST, Qt.resolvedUrl("qrc:/tsc/notification-update.svg"), fullScreenUrl , {"categoryUrl": fullScreenUrl }, "ToonStore mededelingen");
+		notifications.registerSubtype("toonstore", "mededeling", fullScreenUrl , {"categoryUrl": fullScreenUrl});
+	}
+
+	function sendNotification(text) {
+		notifications.send("toonstore", "mededeling", false, text, "category=mededeling");
 	}
 
 	function parseToonstoreMsg(msg) {
@@ -118,6 +129,12 @@ App {
 	function saveShowStoreIcon(text) {
 
 		showStoreIcon = (text == "Yes");
+   		saveSettings();
+	}
+
+	function saveShowNotifications(text) {
+
+		sendNotificationOfNewApps = (text == "Yes");
    		saveSettings();
 	}
 
@@ -259,6 +276,8 @@ App {
 
 	function updateRepoInfo() {
 		
+		readOldRepoInfo();
+
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange=function() {
 			if (xmlhttp.readyState == 4) {
@@ -301,15 +320,29 @@ App {
 			if (autoUpdate) {
 				activateUpdateTimer();
 			}
-	
+			sendNotificationOfNewApps = (toonstoreSettingsJson['sendNotificationOfNewApps'] == "true");
 		} catch(e) {
 		}
+
+		readOldRepoInfo();
 
 		updatesToBeApplied = "";
 		autoUpdatesToBeApplied = "";
 		deletesToBeApplied = "";
 		readInstalledApps();
 		updateRepoInfo();
+	}
+	
+	function readOldRepoInfo() {
+
+		// read old RepoInfo
+
+		try {
+			var toonstoreOldRepoInfoJson = JSON.parse(toonstoreOldRepoInfoFile.read());
+			namesOldRepo = toonstoreOldRepoInfoJson['names'];
+			versionsOldRepo = toonstoreOldRepoInfoJson['versions'];
+		} catch(e) {
+		}
 	}
 
 	function saveSettings() {
@@ -330,10 +363,19 @@ App {
 			tmpautoUpdate = "false";
 		}
 
+
+		var tmpNotifications = "";
+		if (sendNotificationOfNewApps) {
+			tmpNotifications = "true";
+		} else {
+			tmpNotifications = "false";
+		}
+
  		toonstoreSettingsJson = {
 			"showStoreIcon" : tmpTrayIcon,
 			"autoUpdate" : tmpautoUpdate,
-			"autoUpdateTime" : autoUpdateTime
+			"autoUpdateTime" : autoUpdateTime,
+			"sendNotificationOfNewApps" : tmpNotifications
 		}
 
   		var doc3 = new XMLHttpRequest();

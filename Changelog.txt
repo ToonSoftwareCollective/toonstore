@@ -1,3 +1,6 @@
+5.0.4
+- get notifications of new apps and new updates of existing apps
+
 5.0.3
 - selected apps were not deleted if you also installed other apps in one go
 
