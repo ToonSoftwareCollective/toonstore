@@ -19,7 +19,7 @@ Screen {
 			toonstoreModel.xml = app.repoDataAll;
 			toonstoreSimpleList.initialView();
 
-			if (!app.testMode && app.sendNotificationOfNewApps) {
+			if (!app.testMode) {
 				checkNewApps();
 			}
 			if (!app.testMode) saveCurrentRepoInfo();
@@ -58,11 +58,11 @@ Screen {
 		for (var i = 0; i < toonstoreModel.count; i++) {
 			var j = app.namesOldRepo.indexOf(toonstoreModel.get(i).folder);
 			if (j < 0) {
-				app.sendNotification("Er is een nieuwe app beschikbaar in de ToonStore: " + toonstoreModel.get(i).name);
+				if (app.sendNotificationOfNewApps) app.sendNotification("Er is een nieuwe app beschikbaar in de ToonStore: " + toonstoreModel.get(i).name);
 			} else {
 				if ( app.versionsOldRepo[j] !== toonstoreModel.get(i).version) {
 					if (app.installedApps.indexOf(toonstoreModel.get(i).folder) > 0) {
-						app.sendNotification("Er is een update van de app " + toonstoreModel.get(i).name + " beschikbaar in de ToonStore.");
+						if (app.sendNotificationOfNewAppVersions) app.sendNotification("Er is een update van de app " + toonstoreModel.get(i).name + " beschikbaar in de ToonStore.");
 					}
 				}
 			}

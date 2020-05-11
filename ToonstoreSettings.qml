@@ -12,6 +12,8 @@ Screen {
 		addCustomTopRightButton("Toepassen");
 		autoUpdateTimeLabel.inputText = app.autoUpdateTime;
 		autoUpdateToggle.isSwitchedOn = app.autoUpdate;
+		showNotificationsToggle.isSwitchedOn = app.sendNotificationOfNewApps;
+		showNotificationsVersionsToggle.isSwitchedOn = app.sendNotificationOfNewAppVersions;
 		showStoreIconToggle.isSwitchedOn = app.showStoreIcon;
 	}
 
@@ -37,6 +39,7 @@ Screen {
 		id: autoUpdateText
 		x: isNxt ? 36 : 30
 		y: isNxt ? 60 : 50
+		width: showNotificationsVersions.width
 		font.pixelSize: isNxt ? 20 : 16
 		font.family: qfont.semiBold.name
 		text: qsTr("Apps automatisch bijwerken")
@@ -133,7 +136,7 @@ Screen {
 	}
 
 	Text {
-		id: showNotifictions
+		id: showNotifications
 		anchors {
 			top: showIconText.bottom
 			topMargin: isNxt ? 25 : 20
@@ -141,20 +144,47 @@ Screen {
 		}
 		font.pixelSize: isNxt ? 20 : 16
 		font.family: qfont.semiBold.name
-		text: qsTr("Show notification of new apps")
+		text: qsTr("Show notification of a new app")
 	}
 
 	OnOffToggle {
-		id: showNotifictionsToggle
+		id: showNotificationsToggle
 		height: isNxt ? 45 : 36
 		anchors.left: autoUpdateToggle.left
-		anchors.top: showNotifictions.top
+		anchors.top: showNotifications.top
 		leftIsSwitchedOn: false
 		onSelectedChangedByUser: {
 			if (isSwitchedOn) {
 				app.saveShowNotifications("Yes")
 			} else {
 				app.saveShowNotifications("No")
+			}
+		}
+	}
+
+	Text {
+		id: showNotificationsVersions
+		anchors {
+			top: showNotifications.bottom
+			topMargin: isNxt ? 25 : 20
+			left: autoUpdateText.left
+		}
+		font.pixelSize: isNxt ? 20 : 16
+		font.family: qfont.semiBold.name
+		text: qsTr("Show notification of a new app version")
+	}
+
+	OnOffToggle {
+		id: showNotificationsVersionsToggle
+		height: isNxt ? 45 : 36
+		anchors.left: autoUpdateToggle.left
+		anchors.top: showNotificationsVersions.top
+		leftIsSwitchedOn: false
+		onSelectedChangedByUser: {
+			if (isSwitchedOn) {
+				app.saveShowNotificationsVersions("Yes")
+			} else {
+				app.saveShowNotificationsVersions("No")
 			}
 		}
 	}

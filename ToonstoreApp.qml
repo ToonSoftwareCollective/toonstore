@@ -42,6 +42,7 @@ App {
 	property bool updateViaTSCscripts : false
 	property bool autoUpdate : false
 	property bool sendNotificationOfNewApps : false
+	property bool sendNotificationOfNewAppVersions : false
 	property string autoUpdateTime
 	property SystrayIcon toonstoreTray
 	property variant namesOldRepo : []
@@ -135,6 +136,12 @@ App {
 	function saveShowNotifications(text) {
 
 		sendNotificationOfNewApps = (text == "Yes");
+   		saveSettings();
+	}
+
+	function saveShowNotificationsVersions(text) {
+
+		sendNotificationOfNewAppVersions = (text == "Yes");
    		saveSettings();
 	}
 
@@ -320,7 +327,8 @@ App {
 			if (autoUpdate) {
 				activateUpdateTimer();
 			}
-			sendNotificationOfNewApps = (toonstoreSettingsJson['sendNotificationOfNewApps'] == "true");
+			if (toonstoreSettingsJson['sendNotificationOfNewApps']) sendNotificationOfNewApps = (toonstoreSettingsJson['sendNotificationOfNewApps'] == "true");
+			if (toonstoreSettingsJson['sendNotificationOfNewAppVersions']) sendNotificationOfNewAppVersions = (toonstoreSettingsJson['sendNotificationOfNewAppVersions'] == "true");
 		} catch(e) {
 		}
 
@@ -363,7 +371,6 @@ App {
 			tmpautoUpdate = "false";
 		}
 
-
 		var tmpNotifications = "";
 		if (sendNotificationOfNewApps) {
 			tmpNotifications = "true";
@@ -371,11 +378,19 @@ App {
 			tmpNotifications = "false";
 		}
 
+		var tmpNotificationsVersions = "";
+		if (sendNotificationOfNewAppVersions) {
+			tmpNotificationsVersions = "true";
+		} else {
+			tmpNotificationsVersions = "false";
+		}
+
  		toonstoreSettingsJson = {
 			"showStoreIcon" : tmpTrayIcon,
 			"autoUpdate" : tmpautoUpdate,
 			"autoUpdateTime" : autoUpdateTime,
-			"sendNotificationOfNewApps" : tmpNotifications
+			"sendNotificationOfNewApps" : tmpNotifications,
+			"sendNotificationOfNewAppVersions" : tmpNotificationsVersions
 		}
 
   		var doc3 = new XMLHttpRequest();
