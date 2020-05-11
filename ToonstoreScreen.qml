@@ -22,7 +22,7 @@ Screen {
 			if (!app.testMode && app.sendNotificationOfNewApps) {
 				checkNewApps();
 			}
-			saveCurrentRepoInfo();
+			if (!app.testMode) saveCurrentRepoInfo();
 
 		} else {
 			noJamsText.visible = true;
@@ -58,10 +58,12 @@ Screen {
 		for (var i = 0; i < toonstoreModel.count; i++) {
 			var j = app.namesOldRepo.indexOf(toonstoreModel.get(i).folder);
 			if (j < 0) {
-				app.sendNotification("Er is een nieuwe app in de ToonStore: " + toonstoreModel.get(i).name);
+				app.sendNotification("Er is een nieuwe app beschikbaar in de ToonStore: " + toonstoreModel.get(i).name);
 			} else {
 				if ( app.versionsOldRepo[j] !== toonstoreModel.get(i).version) {
-					app.sendNotification("Er is een update in de ToonStore van " + toonstoreModel.get(i).name);
+					if (app.installedApps.indexOf(toonstoreModel.get(i).folder) > 0) {
+						app.sendNotification("Er is een update van de app " + toonstoreModel.get(i).name + " beschikbaar in de ToonStore.");
+					}
 				}
 			}
 		}
