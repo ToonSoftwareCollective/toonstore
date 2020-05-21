@@ -1,3 +1,6 @@
+5.0.7
+- improved notification functionality, increased ToonStore refresh cycle
+
 5.0.6
 - get notifications of new apps and new updates of existing apps
 

@@ -90,11 +90,6 @@ App {
 		source: "file:///var/lib/opkg/info/base-nxt-uni.control"
 	}
 
-	// Read list of installed apps
-	function readInstalledApps() {
-		installedApps = qmlDir.dirEntries;
-	}
-
 	// Init the toonstore app by registering the widgets
 	function init() {
 		registry.registerWidget("screen", fullScreenUrl, this, "toonstoreScreen");
@@ -111,12 +106,6 @@ App {
 		notifications.send("toonstore", "mededeling", false, text, "category=mededeling");
 	}
 
-	function parseToonstoreMsg(msg) {
-
-		toonstoreDataRead = true;
-		repoDataAll = msg;
-		toonstoreUpdated();
-	}
 
 	function saveUpdateTime(text) {
 
@@ -174,12 +163,11 @@ App {
 		var targetTimer = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + addaday, targetHour, targetMinute, 0, 0);
 		targetTimer = targetTimer - nowUtc;
 		if (autoUpdate) {
-			datetimeTimerFiles.interval = targetTimer;
-			datetimeTimerFiles.running = true;
+			autoUpdateTimer.interval = targetTimer;
+			autoUpdateTimer.running = true;
 			console.log("ToonStore auto update timer set for " + targetTimer + " from " + now);
 		} else {
-			datetimeTimerFiles.running = false;	
-			console.log("ToonStore auto update timer not started");
+			autoUpdateTimer.running = false;	
 		}
 	}
 
@@ -217,7 +205,6 @@ App {
    		doc4.send("toonstore");
 	}
 
-
 	function writeDeletesToBeApplied() {
 	
 		var outputstr = deletesToBeApplied.trim();
@@ -233,7 +220,7 @@ App {
 
 	function clearDeletesToBeApplied() {
 	
-		var outputstr = "   ";
+		var outputstr = " ";
    		var doc2 = new XMLHttpRequest();
   		doc2.open("PUT", "file:///tmp/packages_to_delete.txt");
  	  	doc2.send(deletesToBeApplied);
@@ -242,32 +229,14 @@ App {
 
 	function applyUpdates(ActivateTimer) {
 	
-
-		//		1. first write packages to be downloaded and deleted
-		// 		2. secondly edit host file
-		//		3. thirdly call http request
-
 		var check1 = writeUpdatesToBeApplied();
 		var check2 = writeDeletesToBeApplied();
-
 		if (check1 || check2) {		
-			writeTSCscriptCommand();		//valid from 4.16.8 onwards, but app is Firmware 5 compatible only
-		}
-	}
-	
-	function applyAutoUpdates() {
-	
-
-		//		1. first write packages to be downloaded
-		// 		2. secondly edit host file
-		//		3. thirdly call http request
-
-  		if (writeAutoUpdatesToBeApplied()) {
 			writeTSCscriptCommand();
 		}
 	}
-
 	
+
 	function readToonSoftwareVersion() {
 	    	var resultTekst = toonConfig.read();
 	    	if (resultTekst.search( "Version:" ) == -1 ) {
@@ -289,7 +258,9 @@ App {
 		xmlhttp.onreadystatechange=function() {
 			if (xmlhttp.readyState == 4) {
 				if (xmlhttp.status == 200) {
-					parseToonstoreMsg(xmlhttp.responseText);
+					toonstoreDataRead = true;
+					repoDataAll = xmlhttp.responseText;
+					toonstoreUpdated();
 					var now = new Date().getTime();
 					repoRefreshDateTime = "Bijgewerkt: " + i18n.dateTime(now,i18n.time_yes + i18n.mon_full);
 				}
@@ -305,8 +276,9 @@ App {
 
 	function updateRepoInfoAndUpdate() {
 		updateRepoInfo();
-		writeAutoUpdatesToBeApplied();
-		applyAutoUpdates();
+  		if (writeAutoUpdatesToBeApplied()) {
+			writeTSCscriptCommand();
+		}
 	}
 
 	Component.onCompleted: {
@@ -337,7 +309,7 @@ App {
 		updatesToBeApplied = "";
 		autoUpdatesToBeApplied = "";
 		deletesToBeApplied = "";
-		readInstalledApps();
+		installedApps = qmlDir.dirEntries;
 		updateRepoInfo();
 	}
 	
@@ -399,12 +371,21 @@ App {
 	}
 
 	Timer {
-		id: datetimeTimerFiles
-		interval: 86400000
+		id: autoUpdateTimer
+		interval: 999999999
 		triggeredOnStart: false
 		running: false
 		repeat: true
 		onTriggered: updateRepoInfoAndUpdate()
+	}
+
+	Timer {
+		id: updateRepoTimer
+		interval: 10800000  //every three hours
+		triggeredOnStart: false
+		running: true
+		repeat: true
+		onTriggered: updateRepoInfo()
 	}
 	
 	BxtDiscoveryHandler {
