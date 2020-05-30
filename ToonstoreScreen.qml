@@ -131,7 +131,6 @@ Screen {
 		var testMode = app.testMode;
 		app.testMode = !testMode;
 		app.updateRepoInfo();
-		app.readLatestFirmwareVersion();			
 	}
 
 	Item {
@@ -192,6 +191,7 @@ Screen {
 			firmwareminimum : "string",
 			firmwaremaximum : "string",
 			screenshots: "string",
+			toon2only: "string",
 			allowdeletion: "string"
 		})
 	}

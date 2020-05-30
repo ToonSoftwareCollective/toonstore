@@ -24,8 +24,8 @@ Rectangle {
 		}
 	}
 
-	function showDialogToonstore2() {
-			qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", "Deze applicatie " + name + " is niet geschikt voor de software versie " + app.toonSoftwareVersion + " van uw Toon.", "Sluiten");
+	function showDialogToonstore2(text) {
+			qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", text , "Sluiten");
 	}
 
 	FileIO {
@@ -206,6 +206,12 @@ Rectangle {
 		var actfw = compstr.split(".");
 		var result = true;
 
+			// check Toon model compatibility
+
+		if (!isNxt && toon2only == "yes") {
+			return false;
+		}
+
 			//Check minimum version		
 
 		if (parseInt(minfw[0]) > parseInt(actfw[0])) {
@@ -257,7 +263,8 @@ Rectangle {
 
 	width: isNxt ? 870 : 646
 	height: isNxt ? 94 : 73
-//	color: colors.background
+	color: validateVersion(firmwareminimum, firmwaremaximum, app.toonSoftwareVersion, "yes") ? "white" : "transparent"
+
 	Text {
 		id: roadLabel
 		x: isNxt ? 13 : 10
@@ -382,7 +389,11 @@ Rectangle {
 				}
 			} else {
 				downloadButton.state = "down";
-				showDialogToonstore2();
+				if (!isNxt && toon2only == "yes") {
+					showDialogToonstore2("Deze applicatie " + name + " is niet geschikt voor het oude model Toon.");
+				} else {
+					showDialogToonstore2("Deze applicatie " + name + " is niet geschikt voor de software versie " + app.toonSoftwareVersion + " van uw Toon.");
+				}
 			}			
 		}
 	}
