@@ -62,7 +62,9 @@ Screen {
 			} else {
 				if ( app.versionsOldRepo[j] !== toonstoreModel.get(i).version) {
 					if (app.installedApps.indexOf(toonstoreModel.get(i).folder) > 0) {
-						if (app.sendNotificationOfNewAppVersions) app.sendNotification("Er is een update van de app " + toonstoreModel.get(i).name + " beschikbaar in de ToonStore.");
+						if (!app.autoUpdate) {
+							if (app.sendNotificationOfNewAppVersions) app.sendNotification("Er is een update van de app " + toonstoreModel.get(i).name + " beschikbaar in de ToonStore.");
+						}
 					}
 				}
 			}

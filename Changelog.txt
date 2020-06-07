@@ -1,3 +1,6 @@
+5.0.9
+- notifications of new app versions are not shown anymore when auto updating of apps is switched on
+
 5.0.8
 - change in background color for apps which can't be installed on your toon because
   either the firmware version is too low or the app is not compatible with the old model Toon

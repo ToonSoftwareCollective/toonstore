@@ -84,7 +84,6 @@ Rectangle {
 			console.log("*********** Error in toonstore - package to add (AutoUpdates) already present in string")
 		} else {
 			if (skipautoupdate == "no") {
-				console.log("********** adding:" + packageName + " to autoUpdates");
 				app.autoUpdatesToBeApplied = packageName + " " +  app.autoUpdatesToBeApplied;
 			}
 		}
