@@ -43,16 +43,32 @@ Rectangle {
 
 		var xmlhttp = new XMLHttpRequest();
 		xmlhttp.onreadystatechange=function() {
-			if (xmlhttp.readyState == 4) {
-				if (xmlhttp.status == 200) {
+			if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
 					var tmpTxt = xmlhttp.responseText;
-					app.delegateChangelog = tmpTxt.replace("\r\n","\n");
-				}
+					if (typeof tmpTxt != undefined) {
+						app.delegateChangelog = tmpTxt.replace("\r\n","\n");
+					}
 			}
 		}
 		xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/" + folder + "/master/Changelog.txt", true);
 		xmlhttp.send();
+
+		var xmlhttp2 = new XMLHttpRequest();
+		xmlhttp2.onreadystatechange=function() {
+			if (xmlhttp2.readyState === 4 && xmlhttp2.status === 200) {
+
+					var tmpTxt = xmlhttp2.responseText;
+					if (typeof tmpTxt != undefined) {
+						app.delegateChangelog = tmpTxt.replace("\r\n","\n");
+					}
+			}
+		}
+		xmlhttp2.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/" + folder + "/main/Changelog.txt", true);
+		xmlhttp2.send();
 	}
+
+
+	
 
 	function getInstalledStatus() {
 		return (app.installedApps.indexOf(folder) > 0 );

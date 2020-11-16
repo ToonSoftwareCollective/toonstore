@@ -1,3 +1,6 @@
+5.0.10
+- changelog feed from main and from master github source
+
 5.0.9
 - notifications of new app versions are not shown anymore when auto updating of apps is switched on
 
