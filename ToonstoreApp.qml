@@ -267,9 +267,9 @@ App {
 			}
 		}
 		if (testMode) {
-			xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/master/ToonRepoTest.xml", true);
+			xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/main/ToonRepoTest.xml", true);
 		} else {
-			xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/master/ToonRepo.xml", true);
+			xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/main/ToonRepo.xml", true);
 		}
 		xmlhttp.send();
 	}

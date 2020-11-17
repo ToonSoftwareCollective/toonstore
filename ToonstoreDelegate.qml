@@ -50,7 +50,7 @@ Rectangle {
 				}
 			}
 		}
-		xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/" + folder + "/master/Changelog.txt", true);
+		xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/" + folder + "/main/Changelog.txt", true);
 		xmlhttp.send();
 	}
 
