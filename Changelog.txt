@@ -1,3 +1,6 @@
+5.1.0
+- change from master to main repo
+
 5.0.9
 - notifications of new app versions are not shown anymore when auto updating of apps is switched on
 
