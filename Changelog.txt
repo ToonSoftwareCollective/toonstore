@@ -1,5 +1,5 @@
-5.1.1
-- internal maintenance, no new functionality
+5.1.2
+- changed test location for app repository
 
 5.1.0
 - change from master to main repo
