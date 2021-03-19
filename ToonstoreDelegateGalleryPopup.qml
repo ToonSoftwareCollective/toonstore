@@ -48,7 +48,11 @@ Popup {
 
 	function navigatePage(page) {
 		p.currentPage = page;
-		gallery.source = "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/main/" + app.screenshotURLchunk + (p.currentPage + 1) + ".png";
+		if (app.testMode) {
+			gallery.source = "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/test/" + app.screenshotURLchunk + (p.currentPage + 1) + ".png";
+		} else {
+			gallery.source = "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/main/" + app.screenshotURLchunk + (p.currentPage + 1) + ".png";
+		}
 		if (page < p.pageOffsetNavigator) {
 			imageSelector.visible = false;
 		} else {

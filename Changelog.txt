@@ -1,3 +1,6 @@
+5.1.3
+- changed test location for screenshots 
+
 5.1.2
 - changed test location for app repository
 
