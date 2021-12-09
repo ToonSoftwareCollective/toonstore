@@ -108,8 +108,8 @@ Screen {
 	}
 
 	onCustomButtonClicked: {
-		if (app.numberOfAppsSelectedToInstall > 3) {
-			qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", "U kunt niet meer dan drie apps tegelijkertijd installeren", "Sluiten");
+		if (!isNxt && (app.numberOfAppsSelectedToInstall > 3)) {
+			qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", "U kunt niet meer dan drie apps tegelijkertijd installeren op een Toon 1", "Sluiten");
 		} else {
 			if (anythingToUpdate()) {
 				qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", "De geselekteerde apps zullen in de achtergrond worden opgehaald en geinstalleerd danwel verwijderd.\nAls alle wijzigingen zijn doorgevoerd zal de Toon automatisch herstarten.", "Sluiten");
