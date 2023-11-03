@@ -49,7 +49,7 @@ App {
 	property variant versionsOldRepo : []
 
 	property bool toonstoreDataRead: false
-	property bool testMode : false
+	property string activeRepoBranch : "main"
 	property string lanIp: "0.0.0.0"
 	property int numberOfAppsSelectedToInstall : 0
 
@@ -266,11 +266,7 @@ App {
 				}
 			}
 		}
-		if (testMode) {
-			xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/test/ToonRepo.xml", true);
-		} else {
-			xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/main/ToonRepo.xml", true);
-		}
+		xmlhttp.open("GET", "https://raw.githubusercontent.com/ToonSoftwareCollective/toonstore_AppRepository/" + activeRepoBranch + "/ToonRepo.xml", true);
 		xmlhttp.send();
 	}
 

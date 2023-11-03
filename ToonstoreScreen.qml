@@ -19,10 +19,10 @@ Screen {
 			toonstoreModel.xml = app.repoDataAll;
 			toonstoreSimpleList.initialView();
 
-			if (!app.testMode) {
+			if (app.activeRepoBranch == "main" ) {
 				checkNewApps();
+				saveCurrentRepoInfo();
 			}
-			if (!app.testMode) saveCurrentRepoInfo();
 
 		} else {
 			noJamsText.visible = true;
@@ -60,7 +60,7 @@ Screen {
 			if (j < 0) {
 				if (app.sendNotificationOfNewApps) app.sendNotification("Er is een nieuwe app beschikbaar in de ToonStore: " + toonstoreModel.get(i).name);
 			} else {
-				if ( app.versionsOldRepo[j] !== toonstoreModel.get(i).version) {
+				if (app.versionsOldRepo[j] !== toonstoreModel.get(i).version) {
 					if (app.installedApps.indexOf(toonstoreModel.get(i).folder) > 0) {
 						if (!app.autoUpdate) {
 							if (app.sendNotificationOfNewAppVersions) app.sendNotification("Er is een update van de app " + toonstoreModel.get(i).name + " beschikbaar in de ToonStore.");
@@ -99,6 +99,18 @@ Screen {
 
 	}
 
+	function footerText() {
+		if (app.activeRepoBranch == "main" ) {
+			return "Bron: github.com/ToonSoftwareCollective";
+		}
+		if (app.activeRepoBranch == "test" ) {
+			return "Bron: test repository !!";
+		}
+		if (app.activeRepoBranch == "dev" ) {
+			return "Bron: dev repository !!";
+		}
+	}
+
 	function updateInstallButton() {
 		if (anythingToUpdate()) {
 			addCustomTopRightButton("Toon Bijwerken (" + app.numberOfAppsSelectedToInstall + ")");
@@ -108,8 +120,8 @@ Screen {
 	}
 
 	onCustomButtonClicked: {
-		if (!isNxt && (app.numberOfAppsSelectedToInstall > 3)) {
-			qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", "U kunt niet meer dan drie apps tegelijkertijd installeren op een Toon 1", "Sluiten");
+		if (app.numberOfAppsSelectedToInstall > 3) {
+			qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", "U kunt niet meer dan drie apps tegelijkertijd installeren", "Sluiten");
 		} else {
 			if (anythingToUpdate()) {
 				qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", "De geselekteerde apps zullen in de achtergrond worden opgehaald en geinstalleerd danwel verwijderd.\nAls alle wijzigingen zijn doorgevoerd zal de Toon automatisch herstarten.", "Sluiten");
@@ -129,9 +141,16 @@ Screen {
 		}
 	}
 
-	function toggleTestMode() {
-		var testMode = app.testMode;
-		app.testMode = !testMode;
+	function toggleBranch() {
+		if (app.activeRepoBranch == "main") {
+			app.activeRepoBranch = "test" 
+		} else {
+			if (app.activeRepoBranch == "test") {
+				app.activeRepoBranch = "dev"
+			} else {
+				app.activeRepoBranch = "main"
+			}
+		}
 		app.updateRepoInfo();
 	}
 
@@ -259,7 +278,7 @@ Screen {
 
 	Text {
 		id: footerRight
-		text: app.testMode ? "Bron: test xml !!!!!" : "Bron: github.com/ToonSoftwareCollective"
+		text: footerText()
 		anchors {
 			baseline: parent.bottom
 			baselineOffset: -5
@@ -273,7 +292,7 @@ Screen {
 	}
 
 	IconButton {
-		id: btnTestMode;
+		id: btnToggleBranch;
 		width: isNxt ? 48 : 38
 		height: isNxt ? 63 : 50
 		iconSource: ""
@@ -284,6 +303,6 @@ Screen {
 		}
 		colorUp : "transparent"
 		colorDown : "transparent"
-		onClicked: toggleTestMode();
+		onClicked: toggleBranch();
 	}
 }
