@@ -27,7 +27,7 @@ Item {
 	/// delegate for Repeater displaying only items on one page
 	property alias delegate: repeater.delegate
 	/// data model for all items (not only the visible ones)
-	property SimpleXmlListModel dataModel
+	property var dataModel
 	/// Number of items per one page - maximum number of items in Repeater.
 	property int itemsPerPage: 5
 	/// number of items in dataModel

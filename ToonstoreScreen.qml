@@ -2,10 +2,60 @@ import QtQuick 2.1
 import SimpleXmlListModel 1.0
 import qb.components 1.0
 import BasicUIControls 1.0
+import FileIO 1.0
 
 Screen {
-	// toonstore loading indicator
 	property bool toonstoreLoaded: false
+	property string searchFilter: ""
+	property bool updatesOnlyFilter: false
+
+	FileIO { id: filterVersionIO }
+	ListModel { id: filteredModel }
+
+	function rebuildFilteredModel() {
+		filteredModel.clear();
+
+		var items = [];
+		for (var i = 0; i < toonstoreModel.count; i++) {
+			var e = toonstoreModel.get(i);
+			items.push({
+				name: e.name,
+				version: e.version,
+				folder: e.folder,
+				description: e.description,
+				author: e.author,
+				skipautoupdate: e.skipautoupdate,
+				firmwareminimum: e.firmwareminimum,
+				firmwaremaximum: e.firmwaremaximum,
+				screenshots: e.screenshots,
+				toon2only: e.toon2only,
+				allowdeletion: e.allowdeletion
+			});
+		}
+
+		items.sort(function(a, b) {
+			var na = a.name.toLowerCase();
+			var nb = b.name.toLowerCase();
+			return na < nb ? -1 : na > nb ? 1 : 0;
+		});
+
+		var search = searchFilter.toLowerCase();
+
+		for (var j = 0; j < items.length; j++) {
+			var item = items[j];
+
+			if (search !== "" && item.name.toLowerCase().indexOf(search) < 0) continue;
+
+			if (updatesOnlyFilter) {
+				if (app.installedApps.indexOf(item.folder) <= 0) continue;
+				filterVersionIO.source = "file:///qmf/qml/apps/" + item.folder + "/version.txt";
+				var installedVer = filterVersionIO.read().trim();
+				if (installedVer === item.version) continue;
+			}
+
+			filteredModel.append(item);
+		}
+	}
 
 	// Function (triggerd by a signal) updates the toonstore list model and the header text
 	function updateToonstoreList() {
@@ -17,6 +67,7 @@ Screen {
 			// Update the toonstore list model
 			noJamsText.visible = false;
 			toonstoreModel.xml = app.repoDataAll;
+			rebuildFilteredModel();
 			toonstoreSimpleList.initialView();
 
 			if (app.activeRepoBranch == "main" ) {
@@ -34,9 +85,21 @@ Screen {
 		headerText.text = getHeaderText();
 	}
 
+	onSearchFilterChanged: {
+		rebuildFilteredModel();
+		toonstoreSimpleList.initialView();
+		headerText.text = getHeaderText();
+	}
+
+	onUpdatesOnlyFilterChanged: {
+		rebuildFilteredModel();
+		toonstoreSimpleList.initialView();
+		headerText.text = getHeaderText();
+	}
+
 	// Function creates the header text using the correct XML nodes
 	function getHeaderText() {
-		var str = toonstoreSimpleList.count + " Apps in de ToonStore. ";
+		var str = filteredModel.count + " Apps in de ToonStore. ";
 		return str;
 	}
 
@@ -52,9 +115,9 @@ Screen {
 		updateInstallButton();
 		hasBackButton = false;
 	}
-	
+
 	function checkNewApps() {
-		
+
 		for (var i = 0; i < toonstoreModel.count; i++) {
 			var j = app.namesOldRepo.indexOf(toonstoreModel.get(i).folder);
 			if (j < 0) {
@@ -72,7 +135,7 @@ Screen {
 	}
 
 	function saveCurrentRepoInfo() {
-		
+
 		var tmpRepoInfoNames = "";
 		var tmpRepoInfoVersions = "";
 		var j = toonstoreModel.count - 1;
@@ -116,7 +179,7 @@ Screen {
 			addCustomTopRightButton("Toon Bijwerken (" + app.numberOfAppsSelectedToInstall + ")");
 		} else {
 			addCustomTopRightButton("Terug");
-		}	
+		}
 	}
 
 	onCustomButtonClicked: {
@@ -127,7 +190,7 @@ Screen {
 				qdialog.showDialog(qdialog.SizeLarge, "ToonStore mededeling", "De geselekteerde apps zullen in de achtergrond worden opgehaald en geinstalleerd danwel verwijderd.\nAls alle wijzigingen zijn doorgevoerd zal de Toon automatisch herstarten.", "Sluiten");
 				app.applyUpdates("yes");
 			}
-			hide();	
+			hide();
 		}
 	}
 
@@ -143,7 +206,7 @@ Screen {
 
 	function toggleBranch() {
 		if (app.activeRepoBranch == "main") {
-			app.activeRepoBranch = "test" 
+			app.activeRepoBranch = "test"
 		} else {
 			if (app.activeRepoBranch == "test") {
 				app.activeRepoBranch = "dev"
@@ -198,6 +261,84 @@ Screen {
 		}
 	}
 
+	Item {
+		id: filterRow
+		anchors.horizontalCenter: parent.horizontalCenter
+		width: isNxt ? parent.width - 95 : parent.width - 76
+		height: isNxt ? 36 : 28
+		y: isNxt ? 64 : 51
+
+		Text {
+			id: searchLabel
+			text: "Zoek:"
+			font.family: qfont.semiBold.name
+			font.pixelSize: isNxt ? 20 : 16
+			anchors {
+				left: parent.left
+				verticalCenter: parent.verticalCenter
+			}
+		}
+
+		Rectangle {
+			id: searchBox
+			height: isNxt ? 30 : 24
+			width: isNxt ? 320 : 250
+			border.color: "#999999"
+			border.width: 1
+			radius: 3
+			anchors {
+				left: searchLabel.right
+				leftMargin: isNxt ? 8 : 6
+				verticalCenter: parent.verticalCenter
+			}
+
+			MouseArea {
+				anchors.fill: parent
+				onClicked: searchInput.forceActiveFocus()
+			}
+
+			TextInput {
+				id: searchInput
+				anchors {
+					fill: parent
+					leftMargin: 6
+					rightMargin: 6
+				}
+				verticalAlignment: TextInput.AlignVCenter
+				font.family: qfont.italic.name
+				font.pixelSize: isNxt ? 18 : 14
+				onTextChanged: searchFilter = text
+			}
+		}
+
+		Rectangle {
+			id: btnUpdatesOnly
+			width: isNxt ? 210 : 170
+			height: isNxt ? 30 : 24
+			border.color: "#666666"
+			border.width: 1
+			radius: 3
+			color: updatesOnlyFilter ? "#689F38" : "#e0e0e0"
+			anchors {
+				right: parent.right
+				verticalCenter: parent.verticalCenter
+			}
+
+			Text {
+				anchors.centerIn: parent
+				text: "Alleen updates"
+				font.family: qfont.semiBold.name
+				font.pixelSize: isNxt ? 16 : 13
+				color: updatesOnlyFilter ? "white" : "#333333"
+			}
+
+			MouseArea {
+				anchors.fill: parent
+				onClicked: updatesOnlyFilter = !updatesOnlyFilter
+			}
+		}
+	}
+
 
 	SimpleXmlListModel {
 		id: toonstoreModel
@@ -221,14 +362,14 @@ Screen {
 		id: content
 		anchors.horizontalCenter: parent.horizontalCenter
 		width: isNxt ? parent.width - 95 : parent.width - 76
-		height: isNxt ? parent.height - 95 : parent.height - 75
-		y: isNxt ? 64 : 51
+		height: isNxt ? parent.height - 135 : parent.height - 107
+		y: isNxt ? 104 : 83
 		radius: 3
 
 		ToonstoreSimpleList {
 			id: toonstoreSimpleList
 			delegate: ToonstoreDelegate{}
-			dataModel: toonstoreModel
+			dataModel: filteredModel
 			itemHeight: isNxt ? 92 : 73
 			itemsPerPage: 4
 			anchors.top: parent.top
